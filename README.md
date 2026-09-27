@@ -14,20 +14,73 @@
 
 ![KisanSetu System Architecture](docs/architecture_diagram.jpg)
 
-### **Architecture Overview & Data Flow:**
-1. **Client & Presentation Layer:**
-   - **Cross-Platform Clients:** Flutter Mobile App (Android/iOS) + React 18 / TypeScript Web PWA.
-   - **Input Modalities:** Real-time WebAR Camera Leaf Scanner + Web Speech Audio Recognition (Voice-to-Text & Text-to-Speech).
-2. **Application Core Layer:**
-   - **Canvas Pixel & Pathology Analyzer:** Extracts HSV, greenness/chlorophyll indexes, and lesion coordinates.
-   - **Draggable AI Copilot UI:** Draggable Mini/Fullscreen modal with voice controls.
-   - **Zustand State Store:** Global reactive state management for scans, crops, and telemetry.
-3. **Dual AI Processing Engine:**
+### **Architecture Overview:**
+1. **Client & Presentation Layer:** Cross-Platform Flutter Mobile App (Android/iOS) + React 18 / TypeScript Web PWA with WebAR Camera and Web Speech API.
+2. **Application Core Layer:** Canvas Pixel & Pathology Analyzer (HSV/Chlorophyll extraction), Zustand Global State Store, and Draggable Farmer Copilot UI.
+3. **Dual AI Processing Engine:** 
    - **Node 1 (Vision AI):** Instant leaf pathogen diagnosis, severity score (%), and exact 3-tier fertilizer/pesticide dosage calculation.
-   - **Node 2 (Groq Llama-3.3 70B):** Conversational agronomist supporting 14+ Indian regional languages and welfare advisories.
-4. **Backend & Cloud Layer:**
-   - **Server:** Node.js / Express REST API.
-   - **Database:** Firebase Cloud Firestore for historical crop health tracking, user profiles, and offline caches.
+   - **Node 2 (Groq Llama-3.3 70B):** Conversational agronomist with screen-reading synthesis across 14+ Indian regional languages.
+4. **Backend & Cloud Layer:** Express.js REST API + Firebase Firestore / SQLite Database for offline caching and historical telemetry.
+
+---
+
+## 🔄 Data Flow Diagram (DFD)
+
+![KisanSetu Data Flow Diagram](docs/dataflow_diagram.jpg)
+
+### **1. DFD Level 0 (Context Diagram)**
+
+```mermaid
+graph TD
+    User([👨‍🌾 Farmer / User]) <-->|1. Leaf Photos / Voice Queries / Touch Input| KS[🌿 KisanSetu Unified Platform]
+    KS <-->|2. Advisory Voice / Remedial Reports / Alerts| User
+    
+    KS <-->|3. Live Mandi Modal Prices & Arrivals| AGMARKNET[🏛️ AGMARKNET APMC Mandi APIs]
+    KS <-->|4. Beneficiary Status & Installments| PMKISAN[💳 PM-KISAN & PMFBY Portals]
+    KS <-->|5. Weather & Rainfall Telemetry| WEATHER[⛅ Open-Meteo / IMD Weather Service]
+    KS <-->|6. High-Speed Llama-3.3 Agronomy Inference| GROQ[⚡ Groq Cloud LPU AI Engine]
+    KS <-->|7. Telemetry & Scan History Sync| CLOUD[(🗄️ Firebase Cloud Firestore / DB)]
+```
+
+### **2. DFD Level 1 (Detailed Subsystem Data Flow)**
+
+```mermaid
+flowchart TD
+    subgraph S1["INPUT ACQUISITION & VALIDATION"]
+        A[👨‍🌾 Farmer Input] -->|Camera Snapshot / Gallery| P1["Process 1.0: Leaf Image Capture & Preprocessing"]
+        A -->|Microphone Audio Stream| P8["Process 8.0: Web Speech Audio Processor"]
+        P1 -->|Normalized RGB Canvas| P2["Process 2.0: Edge Computer Vision Analyzer"]
+        P1 -->|Non-Agri Artifact| P2_1["Process 2.1: Non-Plant Guardrail Filter"]
+        P2_1 -->|Object Not Plant Alert| A
+    end
+
+    subgraph S2["PATHOLOGY & REASONING PIPELINE"]
+        P2 -->|HSV Spectrum + Chlorophyll Index| P3["Process 3.0: Groq Llama-3.3 AI Diagnosis Engine"]
+        P3 -->|Disease Classification & Severity %| P4["Process 4.0: ICAR Dosage & Chemical Formulator"]
+        P4 -->|Calibrated NPK + Fungicide Prescription| P5["Process 5.0: Recommendation Aggregator"]
+    end
+
+    subgraph S3["GOVERNMENT & MARKET INTEGRATION"]
+        P6["Process 6.0: PM-KISAN / PMFBY Integrator"] <-->|Farmer ID / Aadhaar Hash| EXT1[(PM-KISAN Govt Server)]
+        P7["Process 7.0: AGMARKNET Mandi Price Fetcher"] <-->|State / District / Crop Filter| EXT2[(APMC Mandi Gateway)]
+        P6 -->|Insurance Quote & Subsidy Breakdown| P5
+        P7 -->|Live Market Pricing & Trends| P5
+    end
+
+    subgraph S4["OUTPUT SYNTHESIS & STORAGE"]
+        P5 -->|Synthesized Structured Advisory| P9["Process 9.0: Screen Reading & Multilingual TTS"]
+        P9 -->|Voice Output in 14+ Languages| A
+        P5 -->|Interactive UI Report & Action Plan| A
+        P5 -->|Log Diagnostic Session & Telemetry| DB[(🗄️ System Database / Firestore)]
+    end
+```
+
+### **Data Flow Process Breakdown:**
+
+* **Process 1.0 & 2.0 (Ingestion & Vision Analysis):** The farmer captures leaf imagery via WebAR or native camera. The canvas analyzes color distributions (Greenness/Chlorophyll loss) and checks against the non-plant guardrail (rejecting non-agricultural objects like shoes or laptops).
+* **Process 3.0 & 4.0 (AI Pathology & Dosage Engine):** Pathogen visual features are sent to Groq Llama-3.3 70B along with ICAR expert rules, generating exact chemical dosages (e.g., *Mancozeb 75% WP @ 2g/L*), organic bio-fungicides (*Trichoderma viride*), and NPK recovery ratios.
+* **Process 5.0 & 9.0 (Multilingual Audio & Screen-Reading Synthesis):** The recommendation aggregator synthesizes the report and passes it to the screen-reading TTS engine, speaking remedies aloud in Telugu, Hindi, Tamil, Kannada, Marathi, English, etc.
+* **Process 6.0, 7.0 & DB (Govt Integrations & Persistence):** Pulls live PM-KISAN payment schedules, PMFBY insurance quotes, and AGMARKNET APMC mandi rates, securely saving diagnostic history to Cloud Firestore.
 
 ---
 
@@ -135,6 +188,7 @@ The compiled APK will be at: `kisan_setu_flutter/build/app/outputs/flutter-apk/a
 │   └── build_apk.bat           # 1-Click APK build script
 ├── docs/                       # Architecture diagrams & presentation materials
 │   ├── architecture_diagram.jpg
+│   ├── dataflow_diagram.jpg
 │   ├── system_architecture_slide.jpg
 │   └── presentation_slides_content.md
 ├── KisanSetu_Presentation.pptx # Ready-to-Present PowerPoint Presentation
