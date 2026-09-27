@@ -151,7 +151,7 @@ class _KisanSetuWebViewScreenState extends State<KisanSetuWebViewScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        useLiveHotReload ? "Connecting to Live Auto-Sync..." : "Loading Offline Experience...",
+                        "Loading Smart Agriculture Portal...",
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12,
