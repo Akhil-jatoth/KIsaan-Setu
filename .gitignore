@@ -1,0 +1,32 @@
+# Node & Frontend
+node_modules/
+client/node_modules/
+server/node_modules/
+dist/
+client/dist/
+.vite/
+client/.vite/
+*.local
+.env
+.env.local
+
+# Flutter & Android
+kisan_setu_flutter/.dart_tool/
+kisan_setu_flutter/.flutter-plugins
+kisan_setu_flutter/.flutter-plugins-dependencies
+kisan_setu_flutter/.pub-cache/
+kisan_setu_flutter/.pub/
+kisan_setu_flutter/build/
+kisan_setu_flutter/android/.gradle/
+kisan_setu_flutter/android/local.properties
+kisan_setu_flutter/android/app/build/
+kisan_setu_flutter/ios/Pods/
+kisan_setu_flutter/ios/.symlinks/
+
+# OS & Logs
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

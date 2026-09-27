@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>KisanSetu — AI & AR Smart Agriculture Training & Field Assistance</title>
+    <meta name="description" content="KisanSetu: Next-generation AR/VR-based smart agriculture training and real-time field assistance system powered by computer vision and 3D digital twins." />
+    <meta name="theme-color" content="#061208" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KisanSetu" />
+  </head>
+  <body class="bg-[#061208] text-gray-100 antialiased selection:bg-[#7ED957] selection:text-black">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('SW registration error', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
